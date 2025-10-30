@@ -14,6 +14,32 @@ import {
 import {
   LineChart, Line, ResponsiveContainer, XAxis, Tooltip, YAxis
 } from "recharts";
+// --- minimal UI (inline to avoid missing files) ---
+const cx = (...a) => a.filter(Boolean).join(" ");
+
+export function Button({ variant="default", size="default", className="", asChild=false, ...p }) {
+  const base = "inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium border transition";
+  const v = { default:"bg-black text-white border-black", secondary:"bg-white text-black border-gray-300",
+              outline:"bg-transparent text-black border-gray-300", destructive:"bg-red-600 text-white border-red-600",
+              ghost:"bg-transparent border-transparent" }[variant] || "";
+  const s = { sm:"px-2 py-1 text-xs", default:"", icon:"p-2 w-9 h-9" }[size] || "";
+  const Cmp = asChild ? "span" : "button";
+  return <Cmp className={cx(base, v, s, className)} {...p} />;
+}
+export function Card({ className="", ...p }) { return <div className={cx("rounded-lg border bg-white shadow-sm", className)} {...p} />; }
+export function CardHeader({ className="", ...p }) { return <div className={cx("p-4 border-b", className)} {...p} />; }
+export function CardTitle({ className="", ...p }) { return <h3 className={cx("font-semibold leading-none tracking-tight", className)} {...p} />; }
+export function CardContent({ className="", ...p }) { return <div className={cx("p-4", className)} {...p} />; }
+export function Input({ className="", ...p }) { return <input className={cx("h-9 w-full rounded-md border px-3 text-sm outline-none focus:ring-2 focus:ring-black/20", className)} {...p} />; }
+export function Progress({ value=0, className="" }) { const pct=Math.max(0,Math.min(100,Number(value)||0)); return (<div className={cx("h-2 w-full rounded bg-gray-200", className)}><div className="h-2 rounded bg-black" style={{width:`${pct}%`}}/></div>); }
+import React, { createContext, useContext, useMemo } from "react";
+const TabsCtx=createContext(null);
+export function Tabs({ value,onValueChange,children,className="" }){ const ctx=useMemo(()=>({value,onValueChange}),[value,onValueChange]); return <TabsCtx.Provider value={ctx}><div className={className}>{children}</div></TabsCtx.Provider>; }
+export function TabsList({ className="", ...p }){ return <div className={cx("inline-flex gap-1 rounded-md border p-1", className)} {...p}/>; }
+export function TabsTrigger({ value,children,className="" }){ const ctx=useContext(TabsCtx); const active=ctx?.value===value; return <button onClick={()=>ctx?.onValueChange?.(value)} className={cx("px-3 py-1 text-sm rounded", active?"bg-black text-white":"bg-white", className)} aria-pressed={active}>{children}</button>; }
+export function TabsContent({ value,children,className="" }){ const ctx=useContext(TabsCtx); if(ctx?.value!==value) return null; return <div className={className}>{children}</div>; }
+export function Switch({ checked,onCheckedChange }){ return (<button role="switch" aria-checked={!!checked} onClick={()=>onCheckedChange?.(!checked)} className={cx("inline-flex h-6 w-10 items-center rounded-full border transition", checked?"bg-black border-black":"bg-white border-gray-300")}><span className={cx("block h-5 w-5 rounded-full bg-white transition-transform", checked?"translate-x-4":"translate-x-0.5")}/></button>); }
+// --- end minimal UI ---
 
 /* ======================= Storage & Utils ======================= */
 const LS_KEYS = {
