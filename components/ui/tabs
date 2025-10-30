@@ -1,0 +1,7 @@
+import React,{createContext,useContext,useMemo} from "react";
+const Ctx=createContext(null);
+export function Tabs({value,onValueChange,children,className=""}){const ctx=useMemo(()=>({value,onValueChange}),[value,onValueChange]);return <Ctx.Provider value={ctx}><div className={className}>{children}</div></Ctx.Provider>;}
+export function TabsList({className="",...p}){return <div className={`inline-flex gap-1 rounded-md border p-1 ${className}`} {...p}/>;}
+export function TabsTrigger({value,children,className=""}){const ctx=useContext(Ctx);const active=ctx?.value===value;return(<button onClick={()=>ctx?.onValueChange?.(value)} className={`px-3 py-1 text-sm rounded ${active?"bg-black text-white":"bg-white"} ${className}`} aria-pressed={active}>{children}</button>);}
+export function TabsContent({value,children,className=""}){const ctx=useContext(Ctx);if(ctx?.value!==value)return null;return <div className={className}>{children}</div>;}
+export default Tabs;
